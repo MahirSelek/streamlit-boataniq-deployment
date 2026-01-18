@@ -31,12 +31,20 @@ def initialize_analyzer():
     """Initialize the Vertex AI analyzer with credentials from Streamlit secrets"""
     try:
         # Try to get credentials from Streamlit secrets
-        if 'gcp_credentials' in st.secrets:
-            credentials_json = json.dumps(st.secrets['gcp_service_account'])
+        # Check for both possible secret key names
+        credentials_dict = None
+        if 'gcp_service_account' in st.secrets:
+            credentials_dict = dict(st.secrets['gcp_service_account'])
+        elif 'gcp_credentials' in st.secrets:
+            credentials_dict = dict(st.secrets['gcp_credentials'])
+        
+        if credentials_dict:
+            # Convert to JSON string
+            credentials_json = json.dumps(credentials_dict)
             analyzer = BoatVertexAIAnalyzer(credentials_json=credentials_json)
             return analyzer, None
         else:
-            return None, "GCP credentials not found in Streamlit secrets. Please configure secrets.toml"
+            return None, "GCP credentials not found in Streamlit secrets. Please configure [gcp_service_account] in secrets.toml"
     except Exception as e:
         return None, f"Error initializing analyzer: {str(e)}"
 
