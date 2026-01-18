@@ -32,7 +32,7 @@ def initialize_analyzer():
     try:
         # Try to get credentials from Streamlit secrets
         if 'gcp_credentials' in st.secrets:
-            credentials_json = json.dumps(st.secrets['gcp_credentials'])
+            credentials_json = json.dumps(st.secrets['gcp_service_account'])
             analyzer = BoatVertexAIAnalyzer(credentials_json=credentials_json)
             return analyzer, None
         else:
